@@ -224,7 +224,15 @@ with st.spinner(f"Fetching market data for {stock}..."):
     data = fetch_stock_data(stock, start_date, end_date)
 
 if model is None:
-    st.error("❌ Pre-trained LSTM model file `Stock Predictions Model.keras` not found.")
+    if load_model is None:
+        st.error("⚠️ **TensorFlow / Keras model loader is unavailable because Python 3.14 was selected on Streamlit Cloud.**\n\n"
+                 "👉 **How to Fix (1-Click Step):**\n"
+                 "1. Open your Streamlit Cloud Dashboard ([share.streamlit.io](https://share.streamlit.io/)).\n"
+                 "2. Click **Manage App** (bottom right) ➔ **Settings ⚙️** (or **Advanced Settings**).\n"
+                 "3. Change **Python Version** from `3.14` to **`3.11`** (or `3.10`).\n"
+                 "4. Click **Save** and **Reboot app**.")
+    else:
+        st.error("❌ Pre-trained LSTM model file `Stock_Predictions_Model.keras` could not be loaded.")
     st.stop()
 
 if data is None or data.empty or len(data) < 100:
