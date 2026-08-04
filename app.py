@@ -159,15 +159,40 @@ forecast_days = st.sidebar.slider("Forecast Horizon (Days)", min_value=1, max_va
 def load_prediction_model():
     if load_model is None:
         return None
-    model_filename = 'Stock Predictions Model.keras'
-    checkpoint_path = os.path.join('.ipynb_checkpoints', model_filename)
+    
+    candidates = [
+        'Stock_Predictions_Model.keras',
+        'Stock Predictions Model.keras',
+        os.path.join(os.path.dirname(__file__), 'Stock_Predictions_Model.keras') if '__file__' in globals() else '',
+        os.path.join(os.path.dirname(__file__), 'Stock Predictions Model.keras') if '__file__' in globals() else '',
+        os.path.join('.ipynb_checkpoints', 'Stock Predictions Model.keras')
+    ]
+    
+    for path in candidates:
+        if path and os.path.exists(path):
+            try:
+                m = load_model(path)
+                if m is not None:
+                    return m
+            except Exception:
+                pass
 
-    if os.path.exists(model_filename):
-        return load_model(model_filename)
-    elif os.path.exists(checkpoint_path):
-        return load_model(checkpoint_path)
-    else:
-        return None
+    # Fallback directory scan
+    base_dir = os.path.dirname(__file__) if '__file__' in globals() else '.'
+    for search_dir in ['.', base_dir]:
+        if search_dir and os.path.exists(search_dir):
+            try:
+                for fname in os.listdir(search_dir):
+                    if fname.endswith('.keras') or fname.endswith('.h5'):
+                        try:
+                            m = load_model(os.path.join(search_dir, fname))
+                            if m is not None:
+                                return m
+                        except Exception:
+                            pass
+            except Exception:
+                pass
+    return None
 
 model = load_prediction_model()
 
