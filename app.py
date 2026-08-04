@@ -10,7 +10,13 @@ from plotly.subplots import make_subplots
 import streamlit as st
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-from keras.models import load_model
+try:
+    from keras.models import load_model
+except Exception:
+    try:
+        from tensorflow.keras.models import load_model
+    except Exception:
+        load_model = None
 
 # ==========================================
 # PAGE CONFIGURATION
@@ -151,6 +157,8 @@ forecast_days = st.sidebar.slider("Forecast Horizon (Days)", min_value=1, max_va
 # ==========================================
 @st.cache_resource
 def load_prediction_model():
+    if load_model is None:
+        return None
     model_filename = 'Stock Predictions Model.keras'
     checkpoint_path = os.path.join('.ipynb_checkpoints', model_filename)
 
