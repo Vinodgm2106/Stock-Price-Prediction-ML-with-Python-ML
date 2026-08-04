@@ -1,0 +1,22 @@
+# Python Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+*.pyc
+__pycache__/
+
+# Jupyter & IDE
+.ipynb_checkpoints/
+.vscode/
+.idea/
+*.swp
+
+# Backup & Local Scratch
+old_files_backup/
+scratch/
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
